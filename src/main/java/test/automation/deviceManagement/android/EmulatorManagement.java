@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class emulatorManagement {
+public class EmulatorManagement {
 
     public String osName = System.getProperty("os.name");
     public final String ADB_PATH = getAndroidSdkPath() + File.separator + "platform-tools" + File.separator + "adb";

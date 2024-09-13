@@ -1,24 +1,54 @@
 package test.automation;
 
-import test.automation.deviceManagement.android.emulatorManagement;
+import test.automation.networkProtocol.ConsoleConnection;
+import test.automation.networkProtocol.SocketConnection;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.FileSystems;
 
 public class Main {
     public static void main(String[] args) {
         try {
-            // Step 1: Read the authentication token from the file
-            String authToken = readAuthToken();
 
-            // Step 2: Connect to the Android Emulator Console
             String host = "localhost";
-            int port = 5554; // Replace with your emulator's port number
-            Socket socket = new Socket(host, port);
+            int port = 5554;
+            String userHome = System.getProperty("user.home");
+            String authTokenFile = userHome + FileSystems.getDefault().getSeparator() + ".emulator_console_auth_token";
+            ConsoleConnection console = new ConsoleConnection();
+            String authToken = console.readAuthToken(authTokenFile);
+            SocketConnection socket = new SocketConnection(host, port);
+
+            socket.waitForSocketMessage("OK");
+            socket.sendMessageToSocket("auth " + authToken);
+            socket.waitForSocketMessage("OK");
+            socket.sendMessageToSocket("avd name");
+            //socket.waitForSocketMessage("OK");
+            System.out.println("AVD Name: " + socket.getMessageFromSocket("OK"));
+            socket.closeSocket();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /*Socket socket = new Socket(host, port);
 
             // Step 3: Set up input and output streams for the socket
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -47,7 +77,7 @@ public class Main {
             }
 
             // Close the connection
-            socket.close();
+            socket.close();*/
 
         } catch (Exception e) {
             e.printStackTrace();

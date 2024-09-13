@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class consoleConnection {
+public class ConsoleConnection {
 
     public void waitForConsoleMessage(BufferedReader in, String expectedMessage) throws IOException {
         String line;
@@ -22,8 +22,9 @@ public class consoleConnection {
         String line;
         while ((line = in.readLine()) != null) {
             if (line.equals(expectedMessage)) {
-                consoleMsgLst.add(line);
+                break;
             }
+            consoleMsgLst.add(line);
         }
         return consoleMsgLst;
     }
@@ -61,5 +62,10 @@ public class consoleConnection {
         }  catch (IOException _) {   // exception handling will be done later
         }
         return returnStringStatement;
+    }
+
+    public String readAuthToken(String authTokenFile) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new java.io.FileInputStream(authTokenFile)));
+        return reader.readLine().trim();
     }
 }
