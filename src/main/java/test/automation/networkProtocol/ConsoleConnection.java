@@ -1,19 +1,32 @@
 package test.automation.networkProtocol;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ConsoleConnection {
 
-    public void waitForConsoleMessage(BufferedReader in, String expectedMessage) throws IOException {
-        String line;
-        while ((line = in.readLine()) != null) {
-            if (line.equals(expectedMessage)) {
-                break;
+    private BufferedReader executeCommand(String[] command) {
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            if (!process.waitFor(20, TimeUnit.SECONDS)) {
+                process.destroy();
+                //System.err.println("Process timed out: " + String.join(" ", command)); will be handled later
+                return null;
             }
+            return new BufferedReader(new InputStreamReader(process.getInputStream()));
+        } catch (IOException _) {
+            // Handle exception (improve this in production)
+            return null;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e); // Will be Handled Later
         }
     }
 
@@ -21,51 +34,52 @@ public class ConsoleConnection {
         List<String> consoleMsgLst = new ArrayList<>();
         String line;
         while ((line = in.readLine()) != null) {
-            if (line.equals(expectedMessage)) {
-                break;
-            }
+            if (expectedMessage != null && line.equals(expectedMessage)) break;
             consoleMsgLst.add(line);
         }
         return consoleMsgLst;
     }
 
     public List<String> returnListOfConsoleMessage(BufferedReader in) throws IOException {
-        List<String> consoleMsgLst = new ArrayList<>();
-        String line;
-        while ((line = in.readLine()) != null) {
-            consoleMsgLst.add(line);
-        }
-        return consoleMsgLst;
+        return returnListOfConsoleMessage(in, null);
     }
 
-    public List<String> executeCommandInConsole(String[] command,String expectedMessage){
-        List<String> returnStringStatement = new ArrayList<>();
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(command);
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            returnStringStatement.addAll(returnListOfConsoleMessage(reader,expectedMessage));
-        }  catch (IOException _) {   // exception handling will be done later
+    private List<String> executeCommandInConsole(String[] command, String expectedMessage) {
+        try (BufferedReader reader = executeCommand(command)) {
+            return (reader != null) ? returnListOfConsoleMessage(reader, expectedMessage) : new ArrayList<>();
+        } catch (IOException _) {
+            // Log will be handled later
+            return new ArrayList<>();
         }
-        return returnStringStatement;
     }
 
-    public List<String> executeCommandInConsole(String[] command){
-        List<String> returnStringStatement = new ArrayList<>();
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(command);
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            returnStringStatement.addAll(returnListOfConsoleMessage(reader));
-        }  catch (IOException _) {   // exception handling will be done later
-        }
-        return returnStringStatement;
+    public List<String> executeCommandInConsoleReturnList(String[] command, String expectedMessage) {
+        return executeCommandInConsole(command, expectedMessage);
     }
 
-    public String readAuthToken(String authTokenFile) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new java.io.FileInputStream(authTokenFile)));
-        return reader.readLine().trim();
+    public List<String> executeCommandInConsoleReturnList(String[] command) {
+        return executeCommandInConsole(command, null);
+    }
+
+    public String executeCommandInConsoleReturnString(String[] command, String expectedMessage) {
+        String message = String.join("\n", executeCommandInConsole(command, expectedMessage));
+        if (message.endsWith("\n")) {
+            return message.substring(0, message.length() - 1);
+        }
+        return message;
+    }
+
+    public String executeCommandInConsoleReturnString(String[] command) {
+        String message = String.join("\n", executeCommandInConsole(command, null));
+        if (message.endsWith("\n")) {
+            return message.substring(0, message.length() - 1);
+        }
+        return message;
+    }
+
+    public String readAuthToken(String authTokenFile) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(authTokenFile)))) {
+            return reader.readLine().trim();
+        }
     }
 }

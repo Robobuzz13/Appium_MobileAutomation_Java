@@ -1,5 +1,6 @@
 package test.automation;
 
+import test.automation.deviceManagement.android.EmulatorManagement;
 import test.automation.networkProtocol.ConsoleConnection;
 import test.automation.networkProtocol.SocketConnection;
 
@@ -8,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.FileSystems;
+import java.sql.SQLOutput;
 
 public class Main {
     public static void main(String[] args) {
@@ -28,6 +30,10 @@ public class Main {
             //socket.waitForSocketMessage("OK");
             System.out.println("AVD Name: " + socket.getMessageFromSocket("OK"));
             socket.closeSocket();
+            EmulatorManagement emulatorManagement = new EmulatorManagement();
+
+            System.out.println(emulatorManagement.getListOfAvailableEmulator());
+            System.out.println(emulatorManagement.getListOfRunningEmulator());
 
 
 

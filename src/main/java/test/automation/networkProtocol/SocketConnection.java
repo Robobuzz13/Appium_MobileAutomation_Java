@@ -56,7 +56,7 @@ public class SocketConnection {
 
     public void waitForSocketMessage(String expectedMessage){
         try{
-            console.waitForConsoleMessage(in.get(), expectedMessage);
+            console.returnListOfConsoleMessage(in.get(), expectedMessage);
         }catch(IOException _){
         }
     }
