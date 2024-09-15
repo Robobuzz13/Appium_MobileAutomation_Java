@@ -2,7 +2,7 @@ package test.automation.constant;
 
 public class EmulatorCommands {
 
-    private EnvironmentConstant envConstant;
+    private EnvironmentConstant envConstant = new EnvironmentConstant();
 
     public EmulatorCommands() {
         this.envConstant = new EnvironmentConstant();

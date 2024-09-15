@@ -5,8 +5,8 @@ import test.automation.networkProtocol.ConsoleConnection;
 
 public class EmulatorManagement {
 
-    private final ConsoleConnection console;
-    private final EmulatorCommands emulatorCommands;
+    private ConsoleConnection console;
+    private EmulatorCommands emulatorCommands;
 
     public EmulatorManagement() {
         this.console = new ConsoleConnection();

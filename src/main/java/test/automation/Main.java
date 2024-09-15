@@ -29,11 +29,18 @@ public class Main {
             socket.sendMessageToSocket("avd name");
             //socket.waitForSocketMessage("OK");
             System.out.println("AVD Name: " + socket.getMessageFromSocket("OK"));
+            socket.sendMessageToSocket("avd status");
+            //socket.waitForSocketMessage("OK");
+            System.out.println("AVD status: " + socket.getMessageFromSocket("OK"));
+            socket.sendMessageToSocket("  " +
+                    "power display");
+            //socket.waitForSocketMessage("OK");
+            System.out.println("AVD status: " + socket.getMessageFromSocket("OK"));
             socket.closeSocket();
-            EmulatorManagement emulatorManagement = new EmulatorManagement();
+            /*EmulatorManagement emulatorManagement = new EmulatorManagement();
 
             System.out.println(emulatorManagement.getListOfAvailableEmulator());
-            System.out.println(emulatorManagement.getListOfRunningEmulator());
+            System.out.println(emulatorManagement.getListOfRunningEmulator());*/
 
 
 

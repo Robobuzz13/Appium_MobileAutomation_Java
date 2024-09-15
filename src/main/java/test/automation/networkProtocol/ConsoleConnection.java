@@ -30,6 +30,7 @@ public class ConsoleConnection {
         }
     }
 
+    // Needs to add and Handle interupt exception
     public List<String> returnListOfConsoleMessage(BufferedReader in, String expectedMessage) throws IOException {
         List<String> consoleMsgLst = new ArrayList<>();
         String line;
