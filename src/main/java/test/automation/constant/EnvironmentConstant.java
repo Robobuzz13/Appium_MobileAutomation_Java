@@ -9,6 +9,7 @@ public class EnvironmentConstant {
     public final String OS_NAME = System.getProperty("os.name");
     public final String ADB_PATH = getAndroidSdkPath() + File.separator + "platform-tools" + File.separator + "adb";
     public final String EMULATOR_PATH = getAndroidSdkPath() + File.separator + "emulator"+ File.separator + "emulator";
+    public final String USER_HOME = System.getProperty("user.home");
     public final String NODE_PATH = getNodeLocation();
     public final String APPIUM_PATH = getAppiumPath();
 

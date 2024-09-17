@@ -54,6 +54,18 @@ public class SocketConnection {
         }
     }
 
+    public String getMessageFromSocketString(String expectedMessage){
+        try{
+           String message = String.join("\n", console.returnListOfConsoleMessage(in.get(), expectedMessage));
+            if (message.endsWith("\n")) {
+                return message.substring(0, message.length() - 1);
+            }
+            return message;
+        } catch(IOException _){
+            return null;
+        }
+    }
+
     public void waitForSocketMessage(String expectedMessage){
         try{
             console.returnListOfConsoleMessage(in.get(), expectedMessage);
