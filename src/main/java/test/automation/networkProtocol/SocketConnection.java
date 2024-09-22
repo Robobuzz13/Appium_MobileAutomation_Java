@@ -47,30 +47,19 @@ public class SocketConnection {
     });
 
     public List<String> getMessageFromSocket(String expectedMessage){
-        try{
-            return console.returnListOfConsoleMessage(in.get(), expectedMessage);
-        }catch(IOException _){
-            return null;
-        }
+        return console.returnListOfConsoleMessage(in.get(), expectedMessage);
     }
 
     public String getMessageFromSocketString(String expectedMessage){
-        try{
-           String message = String.join("\n", console.returnListOfConsoleMessage(in.get(), expectedMessage));
-            if (message.endsWith("\n")) {
-                return message.substring(0, message.length() - 1);
-            }
-            return message;
-        } catch(IOException _){
-            return null;
+        String message = String.join("\n", console.returnListOfConsoleMessage(in.get(), expectedMessage));
+        if (message.endsWith("\n")) {
+            return message.substring(0, message.length() - 1);
         }
+        return message;
     }
 
     public void waitForSocketMessage(String expectedMessage){
-        try{
-            console.returnListOfConsoleMessage(in.get(), expectedMessage);
-        }catch(IOException _){
-        }
+        console.returnListOfConsoleMessage(in.get(), expectedMessage);
     }
 
     public void sendMessageToSocket(String message){

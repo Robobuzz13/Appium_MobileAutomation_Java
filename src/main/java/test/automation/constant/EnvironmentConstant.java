@@ -40,7 +40,6 @@ public class EnvironmentConstant {
         String nodePath = getNodeLocation();
         File nodeDir = new File(nodePath).getParentFile();
         String appiumPath = new File(nodeDir, "node_modules"+File.separator+"appium"+File.separator+"build"+File.separator+"lib"+File.separator+"main.js").getAbsolutePath();
-        System.out.println("Appium location: "+appiumPath);  // will be replaced later with logs
         return appiumPath;
     }
 }

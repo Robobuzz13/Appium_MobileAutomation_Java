@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class ConsoleConnection {
 
@@ -31,14 +32,24 @@ public class ConsoleConnection {
     }
 
     // Needs to add and Handle interupt exception
-    public List<String> returnListOfConsoleMessage(BufferedReader in, String expectedMessage) throws IOException {
-        List<String> consoleMsgLst = new ArrayList<>();
-        String line;
-        while ((line = in.readLine()) != null) {
-            if (expectedMessage != null && line.equals(expectedMessage)) break;
-            consoleMsgLst.add(line);
+    public List<String> returnListOfConsoleMessage(BufferedReader in, String expectedMessage)  {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<List<String>> task = () -> {
+            return in.lines()
+                    .filter(line -> !line.startsWith("INFO")) // Filter out "INFO" lines
+                    .filter(line -> expectedMessage == null || !line.equals(expectedMessage)) // Handle expected message
+                    .collect(Collectors.toList());
+        };
+
+        Future<List<String>> future = executor.submit(task);
+        try {
+            return future.get(10, TimeUnit.SECONDS);  // Enforce a 10-second timeout
+        } catch (TimeoutException | InterruptedException | ExecutionException _) {
+            future.cancel(true);  // Cancel the task if it times out
+            return new ArrayList<>();  // Return an empty list on timeout
+        } finally {
+            executor.shutdown();
         }
-        return consoleMsgLst;
     }
 
     public List<String> returnListOfConsoleMessage(BufferedReader in) throws IOException {
